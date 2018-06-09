@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>互亿无线极验验证演示界面</title>
+    <meta name="description" content="互亿无线，致力于为开发者提供验证码短信接口、短信验证码接口、短信API接口，及语音验证码、国际短信、会员营销短信、奖励营销等产品。互亿无线手机短信验证码平台提供106短信发送、三网合一短信通道等短信验证码服务。"/>
+    <meta name="keywords" content="短信验证码,验证码短信,短信验证码接口,验证码短信接口,手机短信验证码接口,106短信平台,语音验证码,国际短信"/>
+    <style>
+	*{margin:0;padding:0}
+	.yanz{width:400px;margin:50px auto}
+	.tc{text-align:center}
+	.yanz h2{font-size:18px;padding-bottom:40px}
+	.shur-bj{background:#F9F9F9;padding:40px 30px;background-color:#F9F9F9;border:1px solid #D5D5D5;box-shadow:0 0 3px #EEE;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px}
+	.item{margin-bottom:15px}
+	.inp{display:block;width:312px;height:30px;padding:6px 12px;font-size:14px;line-height:1.42857143;color:#555;background-color:#fff;background-image:none;border:1px solid #ccc;border-radius:4px;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);box-shadow:inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s}
+	.btn{background:#2CB9EA;border:1px solid #2CB9EA;color:#fff;padding:12px 10px;font-size:18px;border-radius:4px;cursor:pointer;outline:0;width:100%}
+	.btn:hover{background:#1698C5;border:1px solid #1698C5}
+	.huoqu{background:#F9F9F9;border:1px solid #2CB9EA;color:#2CB9EA; width:100px; text-align:center;padding:12px 0px;font-size:14px;border-radius:4px;cursor:pointer;outline:0}
+	.huoqu:hover{background:#2CB9EA;color:#fff}
+	.text{background:#5cb85c;color:#fff;display:inline-block;padding:15px 30px;text-decoration:none;border-radius:4px}
+.geetest_holder.geetest_wind{ width:338px !important}
+        #embed-captcha {
+            width: 338px;
+            margin: 0 auto;
+        }
+        .show {
+            display: block;
+        }
+        .hide {
+            display: none;
+        }
+        #notice {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+	<div class="yanz">
+    	<h2 class="tc">互亿无线极验验证演示界面</h2>
+        <div class="shur-bj">
+        	<div class="tc" style="padding-bottom:30px"><a href="http://www.ihuyi.com/" target="_blank"><img src="./logo300-300.png" width="140"></a></div>
+        
+            <form class="popup" action="../web/VerifyLoginServlet.php" method="post">
+                <div class="item">
+                    <input class="inp" id="mobile" name="mobile" type="text" placeholder="请输入手机号">
+                </div>
+                <div class="item">
+                    <div id="embed-captcha"></div>
+                    <p id="wait" class="show">正在加载验证码......</p>
+                    <p id="notice" class="hide">请先完成验证</p>
+                </div>
+                <div class="item">
+                    <input class="inp" id="code" type="text" name="code" placeholder="请输入验证码" style="width: 200px; display:inline-block;">
+                    <input class="huoqu" id="zphone" type="button" value=" 获取验证码 ">
+                </div>
+                <input class="btn" id="embed-submit" type="submit" value="提交">
+            </form>
+        </div>
+        <p class="tc" style="padding-top:20px; color:#999">还未有互亿无线短信账户，<a href="http://sms.ihuyi.com/register.html" style="color:#2CB9EA;text-decoration:none">立即注册</a></p>
+	</div>
+    <p class="tc" style="padding-top:30px;"><a href="#" class="text" target="_blank">极验验证说明文档</a></p>
+
+
+
+
+<script src="./jquery.js"></script>
+<script src="./gt.js"></script>
+<script>
+    var handlerEmbed = function (captchaObj) {
+        $("#embed-submit").click(function (e) {
+            var mobile = $("#mobile").val();
+            var code = $("#code").val();
+            var validate = captchaObj.getValidate();
+
+            if(mobile == "") {
+                alert('请输入正确的手机号');
+                return false;
+            }  
+            if (!validate) {           
+                $("#notice")[0].className = "show";
+                setTimeout(function () { 
+                $("#notice")[0].className = "hide";
+                }, 2000);                  
+                e.preventDefault();  
+            } 
+            if(code == "") {
+                alert('手机验证码不能为空');
+                return false;
+            }
+        });
+        // 将验证码加到id为captcha的元素里，同时会有三个input的值：geetest_challenge, geetest_validate, geetest_seccode
+        captchaObj.appendTo("#embed-captcha");
+        captchaObj.onReady(function () {
+            $("#wait")[0].className = "hide";
+        });
+
+         $("#zphone").click(function (e) {
+            var mobile = $("#mobile").val();
+            var code = $("#code").val();
+            var validate = captchaObj.getValidate();
+
+            if(mobile == "") {
+                alert('请输入正确的手机号');
+                return false;
+            }  
+            if (!validate) {           
+                alert('点击按钮进行验证');
+                return false; 
+            }
+            $.post('../web/sms.php', {mobile:jQuery.trim($('#mobile').val())}, function(msg) {
+                alert(jQuery.trim(unescape(msg)));
+                if(msg=='提交成功'){
+                    RemainTime();
+                }                 
+            });
+         });
+
+
+    };
+
+    $.ajax({
+        // 获取id，challenge，success（是否启用failback）
+        url: "../web/StartCaptchaServlet.php?t=" + (new Date()).getTime(), // 加随机数防止缓存
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            console.log(data);
+            // 使用initGeetest接口
+            // 参数1：配置参数
+            // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+            initGeetest({
+                gt: data.gt,
+                challenge: data.challenge,
+                new_captcha: data.new_captcha,
+                product: "embed", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                offline: !data.success // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+                // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
+            }, handlerEmbed);
+        }
+    });
+
+    var iTime = 59;
+    var Account;
+    function RemainTime(){
+        document.getElementById('zphone').disabled = true;
+        var iSecond,sSecond="",sTime="";
+        if (iTime >= 0){
+            iSecond = parseInt(iTime%60);
+            iMinute = parseInt(iTime/60)
+            if (iSecond >= 0){
+                if(iMinute>0){
+                    sSecond = iMinute + "分" + iSecond + "秒";
+                }else{
+                    sSecond = iSecond + "秒";
+                }
+            }
+            sTime=sSecond;
+            if(iTime==0){
+                clearTimeout(Account);
+                sTime='获取手机验证码';
+                iTime = 59;
+                document.getElementById('zphone').disabled = false;
+            }else{
+                Account = setTimeout("RemainTime()",1000);
+                iTime=iTime-1;
+            }
+        }else{
+            sTime='没有倒计时';
+        }
+        document.getElementById('zphone').value = sTime;
+    }       
+</script>
+</body>
+</html>
